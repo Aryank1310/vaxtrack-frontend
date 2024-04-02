@@ -1,6 +1,9 @@
 import React, { useState } from "react";
- 
+import { useNavigate } from "react-router-dom"; // Import useNavigate from react-router-dom
+
 const RegistrationForm = () => {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -10,15 +13,15 @@ const RegistrationForm = () => {
     email: "",
     phoneNumber: "",
   });
- 
+
   const [errors, setErrors] = useState({});
- 
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
     setErrors({ ...errors, [name]: "" });
   };
- 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const validationErrors = validateForm(formData);
@@ -34,11 +37,11 @@ const RegistrationForm = () => {
             body: JSON.stringify(formData),
           }
         );
- 
+
         if (!response.ok) {
           throw new Error("Failed to register. Please try again.");
         }
- 
+
         console.log("Form submitted:", formData);
         setFormData({
           firstName: "",
@@ -49,6 +52,7 @@ const RegistrationForm = () => {
           email: "",
           phoneNumber: "",
         });
+        navigate("/otpRegister");
       } catch (error) {
         console.error("Error:", error.message);
         // Handle error accordingly, e.g., set error state
@@ -59,7 +63,7 @@ const RegistrationForm = () => {
   };
   const validateForm = (data) => {
     const errors = {};
- 
+
     // Validate each field
     if (!data.firstName.trim()) {
       errors.firstName = "First name is required";
@@ -67,10 +71,19 @@ const RegistrationForm = () => {
     if (!data.lastName.trim()) {
       errors.lastName = "Last name is required";
     }
- 
-    if (!data.dateOfBirth) {
-      errors.dateOfBirth = "Date of birth is required";
-    }
+
+    if (!data.dob) {
+      errors.dob = "Date of birth is required";
+  } else {
+      // Parse the date string into a Date object
+      const dobDate = new Date(data.dob);
+      // Create a Date object for January 1, 2011
+      const minDate = new Date('2011-01-01');
+      // Compare dobDate with minDate
+      if (dobDate >= minDate) {
+          errors.dob = "Date of birth must be after January 1, 2011";
+      }
+  }
     if (!data.gender) {
       errors.gender = "Please select gender";
     }
@@ -87,10 +100,10 @@ const RegistrationForm = () => {
     } else if (!/^\d{10}$/.test(data.phoneNumber)) {
       errors.phoneNumber = "Contact number must be 10 digits";
     }
- 
+
     return errors;
   };
- 
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-r from-blue-500 to-teal-400 py-12 px-4">
       <div className="w-full max-w-md bg-white rounded-lg shadow-md p-8">
@@ -141,7 +154,7 @@ const RegistrationForm = () => {
                 <p className="text-red-500 text-sm mt-1">{errors.lastName}</p>
               )}
             </div>
- 
+
             <div className="mb-6">
               <label
                 htmlFor="dateOfBirth"
@@ -151,40 +164,41 @@ const RegistrationForm = () => {
               </label>
               <input
                 type="date"
-                id="dateOfBirth"
-                name="dateOfBirth"
+                id="dob"
+                name="dob"
                 value={formData.dateOfBirth}
                 onChange={handleChange}
                 className={`w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-600 ${
-                  errors.dateOfBirth ? "border-red-500" : ""
+                  errors.dob ? "border-red-500" : ""
                 }`}
               />
-              {errors.dateOfBirth && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.dateOfBirth}
-                </p>
+              {errors.dob && (
+                <p className="text-red-500 text-sm mt-1">{errors.dob}</p>
               )}
             </div>
             <div className="mb-6">
-  <label className="block text-sm font-medium text-gray-700">Gender</label>
-  <select
-    id="gender"
-    name="gender"
-    value={formData.gender}
-    onChange={handleChange}
-    className={`w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-600 ${
-      errors.gender ? "border-red-500" : ""
-    }`}
-  >
-    <option value="">Select Gender</option>
-    <option value="Male">Male</option>
-    <option value="Female">Female</option>
-    <option value="Other">Other</option>
-  </select>
-  {errors.gender && <p className="text-red-500 text-sm mt-1">{errors.gender}</p>}
-</div>
- 
- 
+              <label className="block text-sm font-medium text-gray-700">
+                Gender
+              </label>
+              <select
+                id="gender"
+                name="gender"
+                value={formData.gender}
+                onChange={handleChange}
+                className={`w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-600 ${
+                  errors.gender ? "border-red-500" : ""
+                }`}
+              >
+                <option value="">Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+              {errors.gender && (
+                <p className="text-red-500 text-sm mt-1">{errors.gender}</p>
+              )}
+            </div>
+
             <div className="mb-6">
               <label
                 htmlFor="address"
@@ -250,18 +264,26 @@ const RegistrationForm = () => {
                 </p>
               )}
             </div>
- 
+
             <button
-              type="submit"
-              className="w-full py-3 bg-blue-500 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:bg-blue-700"
-            >
-              Register
-            </button>
+  type="submit"
+  style={{
+    marginTop: '16px',
+    padding: '6px 34px',
+    fontSize: '14px',
+    height: '50px',
+    backgroundColor: 'blue',
+    color: 'white',
+    borderRadius: '4px',
+  }}
+>
+  Register
+</button>
           </div>
         </form>
       </div>
     </div>
   );
 };
- 
+
 export default RegistrationForm;
