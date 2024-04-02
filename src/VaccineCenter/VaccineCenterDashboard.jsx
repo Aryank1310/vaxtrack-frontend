@@ -1,119 +1,130 @@
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import {
   CssBaseline,
-  Drawer,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
+  AppBar,
   Toolbar,
-  useMediaQuery,
-  useTheme,
+  Typography,
+  Box,
+  Card,
+  CardContent,
+  Table,
+  TableContainer,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
+  TextField,
+  Button,
 } from "@mui/material";
-import { Box } from "@mui/system";
-import React, { useState } from "react";
-import { Route, Routes, useNavigate } from "react-router-dom";
-import DashboardIcon from "@mui/icons-material/Dashboard";
-import PersonIcon from "@mui/icons-material/Person";
-import AddIcon from "@mui/icons-material/Add";
-import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
-import InventoryIcon from "@mui/icons-material/Inventory";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import Notification from "./components/NotificationVaccineCenter";
-import DashboardCenter from "./components/DashboardCenter";
-import NotificationVaccineCenter from "./components/NotificationVaccineCenter";
-import CenterAppointments from "./components/CenterAppointments";
-import VaccineInventoryForCenter from "./components/VaccineInventoryForCenter";
-
-const menu = [
-  { name: "Dashboard", path: "/vaccinecenter", icon: <DashboardIcon /> },
-  {
-    name: "Vaccines",
-    path: "/vaccinecenter/vaccines",
-    icon: <InventoryIcon />,
-  },
-  {
-    name: "Appointments",
-    path: "/vaccinecenter/appointments",
-    icon: <InventoryIcon />,
-  },
-
-  {
-    name: "Notification",
-    path: "/vaccinecenter/notification",
-    icon: <NotificationsIcon />,
-  },
-];
 const VaccineCentersDashboard = () => {
-  const theme = useTheme();
-  const isLargeScreen = useMediaQuery(theme.breakpoints.up("lg"));
-  const [sideBarVisible, setSideBarVisible] = useState(false);
-  const navigate = useNavigate();
+  const [searchId, setSearchId] = useState("");
+  const [appointments, setAppointments] = useState([]);
+  const [totalVaccines, setTotalVaccines] = useState(0);
+  const [totalVaccinesToday, setTotalVaccinesToday] = useState(0);
 
-  const drawer = (
-    <Box
-      sx={{
-        overflow: "auto",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "space-between",
-        height: "100%",
-      }}
-    >
-      {/* {isLargeScreen && <Toolbar />} */}
-      <List>
-        {menu.map((item, index) => (
-          <ListItem
-            key={item.name}
-            disablePadding
-            onClick={() => navigate(item.path)}
-          >
-            <ListItemButton>
-              <ListItemIcon>{item.icon}</ListItemIcon>
-              <ListItemText>{item.name}</ListItemText>
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
+  useEffect(() => {
+    const fetchAppointments = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:8081/api/appointments"
+        );
+        setAppointments(response.data);
+      } catch (error) {
+        console.error("Error fetching appointments:", error);
+      }
+    };
 
-      <List>
-        <ListItem disablePadding>
-          <ListItemButton>
-            <ListItemIcon>
-              {" "}
-              <AccountCircleIcon />
-            </ListItemIcon>
-            <ListItemText>My Account</ListItemText>
-          </ListItemButton>
-        </ListItem>
-      </List>
-    </Box>
-  );
+    fetchAppointments();
+  }, []);
+
+  useEffect(() => {
+    // Calculate total vaccines in stock
+    const totalStock = appointments.reduce(
+      (total, appointment) => total + appointment.vaccineStock,
+      0
+    );
+    setTotalVaccines(totalStock);
+
+    // Calculate total vaccines given today
+    const today = new Date().toLocaleDateString();
+    const totalToday = appointments.filter(
+      (appointment) => new Date(appointment.appointmentDate).toLocaleDateString() === today
+    ).length;
+    setTotalVaccinesToday(totalToday);
+  }, [appointments]);
+
+  const handleSearch = () => {
+    // Filter appointments based on the entered ID
+    const filteredAppointments = appointments.filter(
+      (appointment) => appointment.appointmentId.toString() === searchId
+    );
+    setAppointments(filteredAppointments);
+  };
+
   return (
     <div>
-      <div className="flex h-[100vh]">
-        <CssBaseline />
-        <div className="w-[15%] border border-r-gray-300  ">{drawer}</div>
-        <div className="w-[85%] ">
-          <Routes>
-            <Route path="/" element={<DashboardCenter />}></Route>
-            <Route
-              path="/appointments"
-              element={<CenterAppointments />}
-            ></Route>
-            <Route
-              path="/vaccines"
-              element={<VaccineInventoryForCenter />}
-            ></Route>
-            <Route
-              path="/notification"
-              element={<NotificationVaccineCenter />}
-            ></Route>
-          </Routes>
-        </div>
+      <CssBaseline />
+      <AppBar position="static">
+        <Toolbar>
+          <Typography variant="h6">Vaccine Center</Typography>
+        </Toolbar>
+      </AppBar>
+      <div className="flex flex-wrap justify-center">
+        <Card className="w-[45%] m-4">
+          <CardContent>
+            <Typography variant="h5">Total Vaccines in Stock</Typography>
+            <Typography variant="h4">{totalVaccines}</Typography>
+          </CardContent>
+        </Card>
+        <Card className="w-[45%] m-4">
+          <CardContent>
+            <Typography variant="h5">Total Vaccines Given Today</Typography>
+            <Typography variant="h4">{totalVaccinesToday}</Typography>
+          </CardContent>
+        </Card>
       </div>
+      <Box className="text-center my-4">
+        <TextField
+          label="Search by Appointment ID"
+          variant="outlined"
+          size="small"
+          style={{ marginRight: "8px" }}
+          value={searchId}
+          onChange={(e) => setSearchId(e.target.value)}
+        />
+        <Button
+          variant="contained"
+          color="primary"
+          style={{ backgroundColor: "#1976D2", color: "white" }}
+          onClick={handleSearch}
+        >
+          Search
+        </Button>
+      </Box>
+      <TableContainer>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Patient ID</TableCell>
+              <TableCell>Vaccine ID</TableCell>
+              <TableCell>Appointment ID</TableCell>
+              <TableCell>Status</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {appointments.map((appointment) => (
+              <TableRow key={appointment.appointmentId}>
+                <TableCell>{appointment.patientId}</TableCell>
+                <TableCell>{appointment.vaccineId}</TableCell>
+                <TableCell>{appointment.appointmentId}</TableCell>
+                <TableCell>{appointment.status}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </div>
   );
 };

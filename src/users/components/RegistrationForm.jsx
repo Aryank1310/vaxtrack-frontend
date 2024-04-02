@@ -1,49 +1,65 @@
 import React, { useState } from "react";
-
+ 
 const RegistrationForm = () => {
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
-    dateOfBirth: "",
-    contactNumber: "",
+    dob: "",
+    gender: "",
+    address: "",
     email: "",
-    govtId: "",
-    registrationDate: "",
-    center: "",
+    phoneNumber: "",
   });
-
+ 
   const [errors, setErrors] = useState({});
-
+ 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
     setErrors({ ...errors, [name]: "" });
   };
-
-  const handleSubmit = (e) => {
+ 
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const validationErrors = validateForm(formData);
     if (Object.keys(validationErrors).length === 0) {
-      console.log("Form submitted:", formData);
-
-      setFormData({
-        firstName: "",
-        lastName: "",
-        dateOfBirth: "",
-        contactNumber: "",
-        email: "",
-        govtId: "",
-        registrationDate: "",
-        center: "",
-      });
+      try {
+        const response = await fetch(
+          "http://localhost:8081/api/patients/register",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData),
+          }
+        );
+ 
+        if (!response.ok) {
+          throw new Error("Failed to register. Please try again.");
+        }
+ 
+        console.log("Form submitted:", formData);
+        setFormData({
+          firstName: "",
+          lastName: "",
+          dob: "",
+          gender: "",
+          address: "",
+          email: "",
+          phoneNumber: "",
+        });
+      } catch (error) {
+        console.error("Error:", error.message);
+        // Handle error accordingly, e.g., set error state
+      }
     } else {
       setErrors(validationErrors);
     }
   };
-
   const validateForm = (data) => {
     const errors = {};
-
+ 
     // Validate each field
     if (!data.firstName.trim()) {
       errors.firstName = "First name is required";
@@ -51,35 +67,30 @@ const RegistrationForm = () => {
     if (!data.lastName.trim()) {
       errors.lastName = "Last name is required";
     }
-    if (!data.gender) {
-      errors.gender = "Please select gender";
-    }
+ 
     if (!data.dateOfBirth) {
       errors.dateOfBirth = "Date of birth is required";
     }
-    if (!data.contactNumber.trim()) {
-      errors.contactNumber = "Contact number is required";
-    } else if (!/^\d{10}$/.test(data.contactNumber)) {
-      errors.contactNumber = "Contact number must be 10 digits";
+    if (!data.gender) {
+      errors.gender = "Please select gender";
+    }
+    if (!data.address.trim()) {
+      errors.address = "Address is required";
     }
     if (!data.email.trim()) {
       errors.email = "Email address is required";
     } else if (!/\S+@\S+\.\S+/.test(data.email)) {
       errors.email = "Invalid email address";
     }
-    if (!data.govtId.trim()) {
-      errors.govtId = "Government ID is required";
+    if (!data.phoneNumber.trim()) {
+      errors.phoneNumber = "Contact number is required";
+    } else if (!/^\d{10}$/.test(data.phoneNumber)) {
+      errors.phoneNumber = "Contact number must be 10 digits";
     }
-    if (!data.registrationDate) {
-      errors.registrationDate = "Registration date is required";
-    }
-    if (!data.center.trim()) {
-      errors.center = "Please select a vaccination center";
-    }
-
+ 
     return errors;
   };
-
+ 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-r from-blue-500 to-teal-400 py-12 px-4">
       <div className="w-full max-w-md bg-white rounded-lg shadow-md p-8">
@@ -130,31 +141,7 @@ const RegistrationForm = () => {
                 <p className="text-red-500 text-sm mt-1">{errors.lastName}</p>
               )}
             </div>
-            <div className="mb-6">
-              <label
-                htmlFor="gender"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Gender
-              </label>
-              <select
-                id="gender"
-                name="gender"
-                value={formData.gender}
-                onChange={handleChange}
-                className={`w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-600 ${
-                  errors.gender ? "border-red-500" : ""
-                }`}
-              >
-                <option value="">Select Gender</option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="other">Other</option>
-              </select>
-              {errors.gender && (
-                <p className="text-red-500 text-sm mt-1">{errors.gender}</p>
-              )}
-            </div>
+ 
             <div className="mb-6">
               <label
                 htmlFor="dateOfBirth"
@@ -179,26 +166,44 @@ const RegistrationForm = () => {
               )}
             </div>
             <div className="mb-6">
+  <label className="block text-sm font-medium text-gray-700">Gender</label>
+  <select
+    id="gender"
+    name="gender"
+    value={formData.gender}
+    onChange={handleChange}
+    className={`w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-600 ${
+      errors.gender ? "border-red-500" : ""
+    }`}
+  >
+    <option value="">Select Gender</option>
+    <option value="Male">Male</option>
+    <option value="Female">Female</option>
+    <option value="Other">Other</option>
+  </select>
+  {errors.gender && <p className="text-red-500 text-sm mt-1">{errors.gender}</p>}
+</div>
+ 
+ 
+            <div className="mb-6">
               <label
-                htmlFor="contactNumber"
+                htmlFor="address"
                 className="block text-sm font-medium text-gray-700"
               >
-                Contact Number
+                Address
               </label>
               <input
                 type="text"
-                id="contactNumber"
-                name="contactNumber"
-                value={formData.contactNumber}
+                id="address"
+                name="address"
+                value={formData.address}
                 onChange={handleChange}
                 className={`w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-600 ${
-                  errors.contactNumber ? "border-red-500" : ""
+                  errors.address ? "border-red-500" : ""
                 }`}
               />
-              {errors.contactNumber && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.contactNumber}
-                </p>
+              {errors.address && (
+                <p className="text-red-500 text-sm mt-1">{errors.address}</p>
               )}
             </div>
             <div className="mb-6">
@@ -224,73 +229,28 @@ const RegistrationForm = () => {
             </div>
             <div className="mb-6">
               <label
-                htmlFor="govtId"
+                htmlFor="phoneNumber"
                 className="block text-sm font-medium text-gray-700"
               >
-                Government ID
+                Contact Number
               </label>
               <input
                 type="text"
-                id="govtId"
-                name="govtId"
-                value={formData.govtId}
+                id="phoneNumber"
+                name="phoneNumber"
+                value={formData.phoneNumber}
                 onChange={handleChange}
                 className={`w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-600 ${
-                  errors.govtId ? "border-red-500" : ""
+                  errors.phoneNumber ? "border-red-500" : ""
                 }`}
               />
-              {errors.govtId && (
-                <p className="text-red-500 text-sm mt-1">{errors.govtId}</p>
-              )}
-            </div>
-            <div className="mb-6">
-              <label
-                htmlFor="registrationDate"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Registration Date
-              </label>
-              <input
-                type="date"
-                id="registrationDate"
-                name="registrationDate"
-                value={formData.registrationDate}
-                onChange={handleChange}
-                className={`w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-600 ${
-                  errors.registrationDate ? "border-red-500" : ""
-                }`}
-              />
-              {errors.registrationDate && (
+              {errors.phoneNumber && (
                 <p className="text-red-500 text-sm mt-1">
-                  {errors.registrationDate}
+                  {errors.phoneNumber}
                 </p>
               )}
             </div>
-            <div className="mb-6">
-              <label
-                htmlFor="center"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Vaccination Center
-              </label>
-              <select
-                id="center"
-                name="center"
-                value={formData.center}
-                onChange={handleChange}
-                className={`w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-600 ${
-                  errors.center ? "border-red-500" : ""
-                }`}
-              >
-                <option value="">Select Center</option>
-                <option value="Center 1">Center 1</option>
-                <option value="Center 2">Center 2</option>
-                <option value="Center 3">Center 3</option>
-              </select>
-              {errors.center && (
-                <p className="text-red-500 text-sm mt-1">{errors.center}</p>
-              )}
-            </div>
+ 
             <button
               type="submit"
               className="w-full py-3 bg-blue-500 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:bg-blue-700"
@@ -303,5 +263,5 @@ const RegistrationForm = () => {
     </div>
   );
 };
-
+ 
 export default RegistrationForm;

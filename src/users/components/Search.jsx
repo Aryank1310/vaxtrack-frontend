@@ -6,12 +6,16 @@ const Search = () => {
   const [pincode, setPincode] = useState("");
   const [centers, setCenters] = useState([]);
   const [selectedCenter, setSelectedCenter] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAppointmentConfirmed, setIsAppointmentConfirmed] = useState(false);
 
   const handleSearch = async () => {
     try {
       const response = await axios.get(
         `http://localhost:8081/api/centers/search?pincode=${pincode}`
       );
+      console.log(response.data);
       setCenters(response.data);
     } catch (error) {
       console.error("Error searching centers:", error);
@@ -20,6 +24,21 @@ const Search = () => {
 
   const handleSelectCenter = (center) => {
     setSelectedCenter(center);
+    setIsModalOpen(true);
+  };
+
+  const handleDateSelect = (date) => {
+    setSelectedDate(date);
+  };
+
+  const handleConfirmAppointment = () => {
+    // Add logic to confirm the appointment
+    console.log("Appointment confirmed for:", selectedCenter, selectedDate);
+    setIsAppointmentConfirmed(true);
+    // Reset states
+    setSelectedCenter(null);
+    setSelectedDate(null);
+    setIsModalOpen(false);
   };
 
   return (
@@ -55,6 +74,9 @@ const Search = () => {
                 <tr>
                   <th className="px-4 py-2">Center Name</th>
                   <th className="px-4 py-2">Address</th>
+                  <th className="px-4 py-2">Contact No.</th>
+                  <th className="px-4 py-2">District</th>
+                  <th className="px-4 py-2">State</th>
                   <th className="px-4 py-2">Select</th>
                 </tr>
               </thead>
@@ -63,12 +85,15 @@ const Search = () => {
                   <tr key={center.id}>
                     <td className="border px-4 py-2">{center.name}</td>
                     <td className="border px-4 py-2">{center.address}</td>
+                    <td className="border px-4 py-2">{center.phoneNumber}</td>
+                    <td className="border px-4 py-2">{center.district}</td>
+                    <td className="border px-4 py-2">{center.state}</td>
                     <td className="border px-4 py-2">
                       <button
                         onClick={() => handleSelectCenter(center)}
                         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                       >
-                        Select
+                        Book
                       </button>
                     </td>
                   </tr>
@@ -77,18 +102,62 @@ const Search = () => {
             </table>
           </div>
         )}
-        {selectedCenter && (
-          <div className="mt-4">
-            <h2 className="text-lg font-semibold mb-2">Selected Center:</h2>
-            <p>Name: {selectedCenter.name}</p>
-            <p>Address: {selectedCenter.address}</p>
-            {/* Add more details as needed */}
-          </div>
-        )}
       </div>
       <div className="md:w-1/3 p-4">
         <img src={search} alt="Vaccine Image" className="max-w-64 max-h-64" />
       </div>
+      {isModalOpen && (
+        <div className="fixed z-10 inset-0 overflow-y-auto">
+          <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div className="fixed inset-0 transition-opacity">
+              <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+            </div>
+            <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true"></span>
+            <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+              <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <div className="sm:flex sm:items-start">
+                  <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                    <h3 className="text-lg leading-6 font-medium text-gray-900" id="modal-headline">
+                      {selectedCenter && `Selected Center: ${selectedCenter.name}`}
+                    </h3>
+                    {selectedCenter && (
+                      <div className="mt-2">
+                        <p>Address: {selectedCenter.address}</p>
+                        <p>Contact Number: {selectedCenter.phoneNumber}</p>
+                      </div>
+                    )}
+                    <h3 className="text-lg leading-6 font-medium text-gray-900" id="modal-headline">
+                      Select Appointment Date
+                    </h3>
+                    <div className="mt-2">
+                      {/* Add date picker component here */}
+                      <input
+                        type="date"
+                        onChange={(e) => handleDateSelect(e.target.value)}
+                        className="block w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                <button
+                  onClick={handleConfirmAppointment}
+                  className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-500 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
+                >
+                  Confirm Appointment
+                </button>
+                <button
+                  onClick={() => setIsModalOpen(false)}
+                  className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
