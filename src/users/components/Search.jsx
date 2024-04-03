@@ -31,15 +31,29 @@ const Search = () => {
     setSelectedDate(date);
   };
 
-  const handleConfirmAppointment = () => {
-    // Add logic to confirm the appointment
-    console.log("Appointment confirmed for:", selectedCenter, selectedDate);
-    setIsAppointmentConfirmed(true);
-    // Reset states
-    setSelectedCenter(null);
-    setSelectedDate(null);
-    setIsModalOpen(false);
+  const handleConfirmAppointment = async () => {
+    try {
+      const response = await axios.post(
+        `http://localhost:8081/api/appointments/register`,
+        {
+          patientId: 7,
+          centerId: selectedCenter.id,
+          vaccineId: 4,
+          appointmentDate: selectedDate
+        }
+      );
+      console.log("Appointment confirmed:", response.data);
+      setIsAppointmentConfirmed(true);
+      // Reset states
+      setSelectedCenter(null);
+      setSelectedDate(null);
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error("Error confirming appointment:", error);
+    }
   };
+
+
 
   return (
     <div className="mx-auto p-6 bg-white flex flex-col md:flex-row">
@@ -116,28 +130,28 @@ const Search = () => {
             <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
               <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                 <div className="sm:flex sm:items-start">
-                  <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900" id="modal-headline">
-                      {selectedCenter && `Selected Center: ${selectedCenter.name}`}
-                    </h3>
-                    {selectedCenter && (
-                      <div className="mt-2">
-                        <p>Address: {selectedCenter.address}</p>
-                        <p>Contact Number: {selectedCenter.phoneNumber}</p>
+                  <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full grid grid-cols-2">
+                    <div className="text-lg leading-6 font-medium text-gray-900">
+                      <div>Selected Center:</div>
+                      <div>Address:</div>
+                      <div>Contact:</div>
+                      <div>Appointment Date:</div>
+                    </div>
+                    <div>
+                      <div>{selectedCenter ? selectedCenter.name : '-'}</div>
+                      <div>{selectedCenter ? selectedCenter.address : '-'}</div>
+                      <div>{selectedCenter ? selectedCenter.phoneNumber : '-'}</div>
+                      <div>
+                        <input
+                          type="date"
+                          value={selectedDate}
+                          onChange={(e) => handleDateSelect(e.target.value)}
+                          className="block w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                        />
                       </div>
-                    )}
-                    <h3 className="text-lg leading-6 font-medium text-gray-900" id="modal-headline">
-                      Select Appointment Date
-                    </h3>
-                    <div className="mt-2">
-                      {/* Add date picker component here */}
-                      <input
-                        type="date"
-                        onChange={(e) => handleDateSelect(e.target.value)}
-                        className="block w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                      />
                     </div>
                   </div>
+
                 </div>
               </div>
               <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">

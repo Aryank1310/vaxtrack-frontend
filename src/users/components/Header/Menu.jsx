@@ -1,7 +1,22 @@
 import React from "react";
-import { Route, Routes } from "react-router-dom";
 
 const Menu = ({ showMenu }) => {
+  const scrollToFAQ = (e) => {
+    e.preventDefault(); // Prevent default behavior of anchor tag
+    const faqSection = document.getElementById("faq-section");
+    if (faqSection) {
+      faqSection.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  const scrollToAbout = (e) => {
+    e.preventDefault(); // Prevent default behavior of anchor tag
+    const aboutSection = document.getElementById("about-section");
+    if (aboutSection) {
+      aboutSection.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <div
       className={`${
@@ -16,27 +31,17 @@ const Menu = ({ showMenu }) => {
       </a>
       <a
         href="/about"
+        onClick={scrollToAbout}
         className="text-white hover:text-gray-300 px-3 py-2 block md:inline"
       >
         About
       </a>
       <a
-        href="/services"
-        className="text-white hover:text-gray-300 px-3 py-2 block md:inline"
-      >
-        Download Certificate
-      </a>
-      <a
-        href="/contact"
+        href="/faq"
+        onClick={scrollToFAQ}
         className="text-white hover:text-gray-300 px-3 py-2 block md:inline"
       >
         FAQs
-      </a>
-      <a
-        href="/contact"
-        className="text-white hover:text-gray-300 px-3 py-2 block md:inline"
-      >
-        Help
       </a>
       <div className="bg-white p-2 rounded-md">
         <a

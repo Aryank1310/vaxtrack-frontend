@@ -90,7 +90,7 @@ const VaccineCentersDashboard = () => {
           label="Search by Appointment ID"
           variant="outlined"
           size="small"
-          style={{ marginRight: "8px" }}
+          style={{ width: "calc(100% - 100px)", maxWidth: "1200px", marginRight: "16px" }}
           value={searchId}
           onChange={(e) => setSearchId(e.target.value)}
         />
@@ -103,6 +103,7 @@ const VaccineCentersDashboard = () => {
           Search
         </Button>
       </Box>
+
       <TableContainer>
         <Table>
           <TableHead>

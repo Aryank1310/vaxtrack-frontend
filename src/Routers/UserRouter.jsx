@@ -3,6 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import { User } from "../users/User";
 import { Register } from "../users/Register";
 import Login1 from "../users/Login1";
+import ViewMore from "../users/components/ViewMore";
 
 export const UserRouter = () => {
   return (
@@ -12,6 +13,7 @@ export const UserRouter = () => {
           <Route path="/*" element={<User />}></Route>
           <Route path="/register" element={<Register />}></Route>
           <Route path="/login" element={<Login1 />}></Route>
+          <Route path="/viewmore" element={<ViewMore/>}></Route>
         </Routes>
       </div>
     </div>

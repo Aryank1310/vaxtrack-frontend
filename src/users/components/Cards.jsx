@@ -5,7 +5,7 @@ import step3 from "../../assets/step3.jpg";
 
 const VaccinationSteps = () => {
   return (
-    <div className="max-w-4xl mx-auto py-10">
+    <div id="about-section" className="max-w-4xl mx-auto py-10">
       <h2 className="text-center text-3xl font-bold mb-8">
         Get Vaccinated in 3 Steps
       </h2>

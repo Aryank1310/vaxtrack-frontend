@@ -26,9 +26,9 @@ const Stats = () => {
                         <dd className="order-first text-3xl font-semibold tracking-tight text-white sm:text-5xl">{totalVaccinations.toLocaleString()}</dd>
                     </div>
                     <div className="m-auto flex max-w-xs flex-col">
-                        <button className="bg-yellow-300 hover:bg-yellow-400 text-black font-bold py-3 px-6 rounded-md">
+                    <a href="/viewmore" className="bg-yellow-300 hover:bg-yellow-400 text-black font-bold py-3 px-6 rounded-md">
                             View More
-                        </button>
+                        </a>
                     </div>
                     <div className="mx-auto flex max-w-xs flex-col gap-y-2">
                         <dt className="text-base leading-7 text-white">Vaccinations Done today</dt>

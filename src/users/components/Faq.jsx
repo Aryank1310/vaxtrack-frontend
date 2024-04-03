@@ -28,7 +28,7 @@ const Faq = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto mt-8 flex flex-col md:flex-row">
+    <div  id="faq-section" className="max-w-4xl mx-auto mt-8 flex flex-col md:flex-row">
       <div className="md:w-1/3 p-4">
         <img src={faq} alt="Related Image" className="w-full h-auto" />
       </div>

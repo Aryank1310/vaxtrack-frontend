@@ -59,15 +59,22 @@ const Admin = () => {
   const [sideBarVisible, setSideBarVisible] = useState(false);
   const navigate = useNavigate();
 
+  const drawerWidth = 200; 
   const drawer = (
     <Box
-      sx={{
-        overflow: "auto",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "space-between",
-        height: "100%"
-      }}
+    sx={{
+      overflow: "auto",
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "space-between",
+      height: "100%",
+      position: "fixed",
+      top: 0,
+      left: 0,
+      bottom: 0,
+      width: drawerWidth,
+      backgroundColor: "#008DDA",
+    }}
     >
       {/* {isLargeScreen && <Toolbar />} */}
       <List>
@@ -100,25 +107,25 @@ const Admin = () => {
   );
   return (
     <div>
-      <div className="flex h-[100vh]">
-        <CssBaseline />
-        <div className="w-[25%] border border-r-gray-300 bg-blue-008DDA ">{drawer}</div>
-        <div className="w-[85%] ">
-          <Routes>
-            <Route path="/" element={<AdminDashboard />}></Route>
-            <Route
-              path="/vaccinecenter/create"
-              element={<AddVaccinationCenter />}
-            ></Route>
-            <Route path="/appointments" element={<Appointments />}></Route>
-            <Route path="/vaccinecenter" element={<VaccineCenters />}></Route>
-            <Route path="/patients" element={<Patients />}></Route>
-            <Route path="/vaccines" element={<Vaccines />}></Route>
-            <Route path="/notification" element={<Notification />}></Route>
-          </Routes>
-        </div>
+    <div className="flex h-[100vh]">
+      <CssBaseline />
+      <div className="w-[25%] border border-r-gray-300 bg-blue-008DDA ">{drawer}</div>
+      <div className="w-[85%] px-4"> {/* Add padding to the right */}
+        <Routes>
+          <Route path="/" element={<AdminDashboard />}></Route>
+          <Route
+            path="/vaccinecenter/create"
+            element={<AddVaccinationCenter />}
+          ></Route>
+          <Route path="/appointments" element={<Appointments />}></Route>
+          <Route path="/vaccinecenter" element={<VaccineCenters />}></Route>
+          <Route path="/patients" element={<Patients />}></Route>
+          <Route path="/vaccines" element={<Vaccines />}></Route>
+          <Route path="/notification" element={<Notification />}></Route>
+        </Routes>
       </div>
     </div>
+  </div>
   );
 };
 
