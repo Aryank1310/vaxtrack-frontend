@@ -68,10 +68,6 @@ const Admin = () => {
       flexDirection: "column",
       justifyContent: "space-between",
       height: "100%",
-      position: "fixed",
-      top: 0,
-      left: 0,
-      bottom: 0,
       width: drawerWidth,
       backgroundColor: "#008DDA",
     }}
@@ -109,8 +105,8 @@ const Admin = () => {
     <div>
     <div className="flex h-[100vh]">
       <CssBaseline />
-      <div className="w-[25%] border border-r-gray-300 bg-blue-008DDA ">{drawer}</div>
-      <div className="w-[85%] px-4"> {/* Add padding to the right */}
+      <div className="w-[20%] border border-r-gray-300 bg-blue-008DDA ">{drawer}</div>
+      <div className="w-[85%] px-4 overflow-auto"> {/* Add padding to the right */}
         <Routes>
           <Route path="/" element={<AdminDashboard />}></Route>
           <Route

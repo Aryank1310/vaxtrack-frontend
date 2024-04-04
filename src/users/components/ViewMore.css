@@ -1,0 +1,88 @@
+.header {
+    background-color: #008DDA;
+    padding: 20px 0;
+    text-align: left;
+}
+
+.header h1 {
+    color: white;
+    font-weight: bold;
+    padding-left: 20px;
+}
+
+.card-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 20px auto;
+    max-width: 1200px;
+}
+
+.card {
+    width: 300px;
+    padding: 20px;
+    background-color: whitesmoke;
+    margin: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s;
+}
+
+.card:hover {
+    background-color:rgb(179, 222, 253);
+}
+
+.card h2 {
+    background-color: #008DDA;
+    color: white;
+    padding: 10px;
+    border-radius: 5px 5px 5px 5px;
+    margin: 0;
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.card p {
+   
+    font-size:large;
+    font-weight: bold;
+    text-align: center;
+}
+.image-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px; 
+   /* Adjust margin-top as needed */
+}
+.card2{
+    width: 300px;
+    padding: 20px;
+    background-color:white;
+    margin: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s;
+}
+
+.card2:hover {
+    background-color:rgb(179, 222, 253);
+}
+
+.card2 h2 {
+    background-color: #008DDA;
+    color: white;
+    padding: 10px;
+    border-radius: 5px 5px 5px 5px;
+    margin: 0;
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.card2 p {
+   
+    font-size:large;
+    font-weight: bold;
+    text-align: center;
+}

@@ -74,16 +74,16 @@ const RegistrationForm = () => {
 
     if (!data.dob) {
       errors.dob = "Date of birth is required";
-  } else {
+    } else {
       // Parse the date string into a Date object
       const dobDate = new Date(data.dob);
       // Create a Date object for January 1, 2011
       const minDate = new Date('2011-01-01');
       // Compare dobDate with minDate
       if (dobDate >= minDate) {
-          errors.dob = "Date of birth must be after January 1, 2011";
+        errors.dob = "Date of birth must be after January 1, 2011";
       }
-  }
+    }
     if (!data.gender) {
       errors.gender = "Please select gender";
     }
@@ -105,7 +105,7 @@ const RegistrationForm = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-r from-blue-500 to-teal-400 py-12 px-4">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-r from-blue-500 to-teal-400 py-12 px-4 mt-10">
       <div className="w-full max-w-md bg-white rounded-lg shadow-md p-8">
         <h2 className="text-2xl font-bold text-center mb-8">
           COVID-19 Vaccination Registration
@@ -125,9 +125,8 @@ const RegistrationForm = () => {
                 name="firstName"
                 value={formData.firstName}
                 onChange={handleChange}
-                className={`w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-600 ${
-                  errors.firstName ? "border-red-500" : ""
-                }`}
+                className={`w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-600 ${errors.firstName ? "border-red-500" : ""
+                  }`}
               />
               {errors.firstName && (
                 <p className="text-red-500 text-sm mt-1">{errors.firstName}</p>
@@ -146,9 +145,8 @@ const RegistrationForm = () => {
                 name="lastName"
                 value={formData.lastName}
                 onChange={handleChange}
-                className={`w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-600 ${
-                  errors.lastName ? "border-red-500" : ""
-                }`}
+                className={`w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-600 ${errors.lastName ? "border-red-500" : ""
+                  }`}
               />
               {errors.lastName && (
                 <p className="text-red-500 text-sm mt-1">{errors.lastName}</p>
@@ -168,9 +166,8 @@ const RegistrationForm = () => {
                 name="dob"
                 value={formData.dateOfBirth}
                 onChange={handleChange}
-                className={`w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-600 ${
-                  errors.dob ? "border-red-500" : ""
-                }`}
+                className={`w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-600 ${errors.dob ? "border-red-500" : ""
+                  }`}
               />
               {errors.dob && (
                 <p className="text-red-500 text-sm mt-1">{errors.dob}</p>
@@ -185,9 +182,8 @@ const RegistrationForm = () => {
                 name="gender"
                 value={formData.gender}
                 onChange={handleChange}
-                className={`w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-600 ${
-                  errors.gender ? "border-red-500" : ""
-                }`}
+                className={`w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-600 ${errors.gender ? "border-red-500" : ""
+                  }`}
               >
                 <option value="">Select Gender</option>
                 <option value="Male">Male</option>
@@ -212,9 +208,8 @@ const RegistrationForm = () => {
                 name="address"
                 value={formData.address}
                 onChange={handleChange}
-                className={`w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-600 ${
-                  errors.address ? "border-red-500" : ""
-                }`}
+                className={`w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-600 ${errors.address ? "border-red-500" : ""
+                  }`}
               />
               {errors.address && (
                 <p className="text-red-500 text-sm mt-1">{errors.address}</p>
@@ -233,9 +228,8 @@ const RegistrationForm = () => {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className={`w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-600 ${
-                  errors.email ? "border-red-500" : ""
-                }`}
+                className={`w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-600 ${errors.email ? "border-red-500" : ""
+                  }`}
               />
               {errors.email && (
                 <p className="text-red-500 text-sm mt-1">{errors.email}</p>
@@ -254,9 +248,8 @@ const RegistrationForm = () => {
                 name="phoneNumber"
                 value={formData.phoneNumber}
                 onChange={handleChange}
-                className={`w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-600 ${
-                  errors.phoneNumber ? "border-red-500" : ""
-                }`}
+                className={`w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-600 ${errors.phoneNumber ? "border-red-500" : ""
+                  }`}
               />
               {errors.phoneNumber && (
                 <p className="text-red-500 text-sm mt-1">
@@ -266,21 +259,22 @@ const RegistrationForm = () => {
             </div>
 
             <button
-  type="submit"
-  style={{
-    marginTop: '16px',
-    padding: '6px 34px',
-    fontSize: '14px',
-    height: '50px',
-    backgroundColor: 'blue',
-    color: 'white',
-    borderRadius: '4px',
-  }}
->
-  Register
-</button>
+              type="submit"
+              style={{
+                marginTop: '16px',
+                padding: '6px 34px',
+                fontSize: '14px',
+                height: '50px',
+                backgroundColor: 'blue',
+                color: 'white',
+                borderRadius: '4px',
+              }}
+            >
+              Register
+            </button>
           </div>
         </form>
+        <p className="text-sm">Already registered <a href="otpregister" className="text-blue-500">login</a></p>
       </div>
     </div>
   );

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom"; // Import useNavigate hook for navigation
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -26,10 +27,19 @@ const FilterContainer = styled("div")({
   marginBottom: "20px",
 });
 
+const DeleteButton = styled("button")({
+  backgroundColor: "red",
+  color: "white",
+  border: "none",
+  padding: "8px 16px",
+  cursor: "pointer",
+});
+
 const Patients = () => {
   const [patients, setPatients] = useState([]);
   const [error, setError] = useState(null);
   const [filter, setFilter] = useState("all");
+  const navigate = useNavigate(); // Initialize useNavigate hook
 
   useEffect(() => {
     const fetchPatients = async () => {
@@ -48,12 +58,24 @@ const Patients = () => {
     setFilter(event.target.value);
   };
 
+  const handleDelete = async (patientId) => {
+    try {
+      await axios.delete(`http://localhost:8081/api/patients/delete/${patientId}`);
+      // Remove the deleted patient from the state
+      setPatients(patients.filter(patient => patient.patientId !== patientId));
+      // Redirect to the patients page
+      navigate("/admin/patients");
+    } catch (error) {
+      setError(error.message);
+    }
+  };
+
   if (error) {
     return <div>Error: {error}</div>;
   }
 
   return (
-    <div  className="px-10 py-4">
+    <div className="px-10 py-4">
       <PatientsHeading variant="h2">Patients</PatientsHeading>
       <FilterContainer>
         <FormControl sx={{ m: 1, minWidth: 120 }}>
@@ -85,6 +107,7 @@ const Patients = () => {
               <TableCell sx={{ color: 'white' }}>Phone Number</TableCell>
               <TableCell sx={{ color: 'white' }}>Registration Date</TableCell>
               <TableCell sx={{ color: 'white' }}>Vaccination Status</TableCell>
+              <TableCell sx={{ color: 'white' }}>Actions</TableCell> {/* Added Actions column */}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -113,6 +136,11 @@ const Patients = () => {
                   <TableCell align="left">{patient.registrationDate}</TableCell>
                   <TableCell align="left">
                     {patient.vaccinationStatus ? "Yes" : "No"}
+                  </TableCell>
+                  <TableCell align="left">
+                    {patient.vaccinationStatus && (
+                      <DeleteButton onClick={() => handleDelete(patient.patientId)}>Delete</DeleteButton>
+                    )}
                   </TableCell>
                 </TableRow>
               ))}

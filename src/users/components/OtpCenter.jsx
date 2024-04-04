@@ -8,9 +8,8 @@ import { auth } from "../../firebase";
 import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 import { toast, Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 
-const OtpRegister = () => {
+const OtpCenter = () => {
   const navigate = useNavigate();
   const [otp, setOtp] = useState("");
   const [ph, setPh] = useState("");
@@ -40,39 +39,43 @@ const OtpRegister = () => {
   }, [firebaseInitialized, recaptchaVerifier]);
 
   // Function to handle sign-up process
-  const onSignup = async () => {
+  const onSignup = () => {
     setLoading(true);
+    const formatPh = "+" + ph;
 
-    try {
-      // Make API request to check if phone number exists
-      const response = await axios.get(
-        `http://localhost:8081/api/patients/phone/${ph.substring(2)}`
-      );
-
-      if (response.data) {
-        // Phone number exists in the database
-        const formatPh = "+" + ph;
-
-        setUpRecaptha(formatPh)
-          .then((confirmationResult) => {
-            window.confirmationResult = confirmationResult;
-            setLoading(false);
-            setShowOTP(true);
-            toast.success("OTP sent successfully!");
-          })
-          .catch((error) => {
-            console.error("Error setting up reCAPTCHA:", error);
-            setLoading(false);
-          });
-      } else {
-        // Phone number doesn't exist in the database
+    // Make API call to check if phone number is present in the database
+    fetch(`http://localhost:8081/api/centers/phone/${ph}`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Invalid Credentials");
+        }
+        return response;
+      })
+      .then((data) => {
+        // Phone number exists in the database, proceed with OTP verification
+        if (data) {
+          setUpRecaptcha(formatPh)
+            .then((confirmationResult) => {
+              window.confirmationResult = confirmationResult;
+              setLoading(false);
+              setShowOTP(true);
+              toast.success("OTP sent successfully!");
+            })
+            .catch((error) => {
+              console.log(error);
+              setLoading(false);
+            });
+        } else {
+          // Phone number not found in the database
+          setLoading(false);
+          toast.error("Invalid Credentials");
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
         setLoading(false);
-        toast.error("Wrong credentials: Phone number not found");
-      }
-    } catch (error) {
-      console.error("Error checking phone number:", error);
-      setLoading(false);
-    }
+        toast.error(error.message);
+      });
   };
 
   // Function to handle OTP verification
@@ -82,13 +85,13 @@ const OtpRegister = () => {
       .confirm(otp)
       .then(async (res) => {
         console.log(res);
+        sessionStorage.setItem('centerPhone', JSON.stringify(res.user.providerData[0].phoneNumber));
         setUser(res.user);
-        sessionStorage.setItem('userPhone', JSON.stringify(res.user.providerData[0].phoneNumber));
         setLoading(false);
         navigate("/");
       })
       .catch((err) => {
-        console.error("Error verifying OTP:", err);
+        console.log(err);
         setLoading(false);
       });
   };
@@ -148,12 +151,7 @@ const OtpRegister = () => {
                 >
                   Verify your phone number
                 </label>
-                <PhoneInput
-                  country={"in"}
-                  value={ph}
-                  onChange={setPh}
-                  disableDropdown={true} // Disable country code dropdown
-                />
+                <PhoneInput country={"in"} value={ph} onChange={setPh} />
                 <button
                   onClick={onSignup}
                   className="bg-blue-800 hover:bg-blue-950 w-full flex gap-1 items-center justify-center py-2.5 text-white rounded"
@@ -172,10 +170,10 @@ const OtpRegister = () => {
   );
 };
 
-function setUpRecaptha(number) {
+function setUpRecaptcha(number) {
   const recaptchaVerifier = new RecaptchaVerifier(auth, "recaptcha-container", {});
   recaptchaVerifier.render();
   return signInWithPhoneNumber(auth, number, recaptchaVerifier);
 }
 
-export default OtpRegister;
+export default OtpCenter;

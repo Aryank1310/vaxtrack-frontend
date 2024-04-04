@@ -5,6 +5,9 @@ import { Register } from "../users/Register";
 import Login1 from "../users/Login1";
 import OtpRegister from "../users/components/OtpRegister";
 import ViewMore from "../users/components/ViewMore";
+import Signin from "../users/components/Signin";
+import MyProfilePage from "../users/MyProfilePage";
+import OtpCenter from "../users/components/OtpCenter";
 
 export const UserRouter = () => {
   return (
@@ -16,6 +19,9 @@ export const UserRouter = () => {
           <Route path="/login" element={<Login1 />}></Route>
           <Route path="/OtpRegister" element={<OtpRegister />}></Route>
           <Route path="/viewmore" element={<ViewMore/>}></Route>
+          <Route path="/signin" element={<Signin />}></Route>
+          <Route path="/myprofile" element={<MyProfilePage/>}></Route>
+          <Route path="/otpCenter" element={<OtpCenter/>}></Route>
         </Routes>
       </div>
     </div>

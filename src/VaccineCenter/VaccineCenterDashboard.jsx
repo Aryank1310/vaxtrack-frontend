@@ -16,6 +16,8 @@ import {
   TableCell,
   TextField,
   Button,
+  Select,
+  MenuItem,
 } from "@mui/material";
 
 const VaccineCentersDashboard = () => {
@@ -28,7 +30,7 @@ const VaccineCentersDashboard = () => {
     const fetchAppointments = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8081/api/appointments"
+          "http://localhost:8081/api/appointments/1"
         );
         setAppointments(response.data);
       } catch (error) {
@@ -61,6 +63,19 @@ const VaccineCentersDashboard = () => {
       (appointment) => appointment.appointmentId.toString() === searchId
     );
     setAppointments(filteredAppointments);
+  };
+
+  const handleStatusChange = (appointmentId, status) => {
+    // Update status in the backend
+    axios.put(`http://localhost:8081/api/appointments/updateStatus/${appointmentId}`, { status })
+      .then(() => {
+        // Update status in the frontend
+        const updatedAppointments = appointments.map((appointment) =>
+          appointment.appointmentId === appointmentId ? { ...appointment, status } : appointment
+        );
+        setAppointments(updatedAppointments);
+      })
+      .catch(error => console.error("Error updating appointment status:", error));
   };
 
   return (
@@ -120,7 +135,16 @@ const VaccineCentersDashboard = () => {
                 <TableCell>{appointment.patientId}</TableCell>
                 <TableCell>{appointment.vaccineId}</TableCell>
                 <TableCell>{appointment.appointmentId}</TableCell>
-                <TableCell>{appointment.status}</TableCell>
+                <TableCell>
+                  <Select
+                    value={appointment.status}
+                    onChange={(e) => handleStatusChange(appointment.appointmentId, e.target.value)}
+                  >
+                    <MenuItem value="Scheduled">Scheduled</MenuItem>
+                    <MenuItem value="Completed">Completed</MenuItem>
+                    <MenuItem value="Canceled">Canceled</MenuItem>
+                  </Select>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
